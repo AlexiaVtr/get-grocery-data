@@ -29,7 +29,7 @@ func main() {
 	// escribe la cabecera del archivo .csv
 	w.Write([]string{"name", "code", "price", "image_url"})
 
-	// selecciona todos los elementos de la clase "product-description"
+	// selecciona todos los elementos de la clase "leftList"
 	doc.Find(".leftList").Each(func(i int, s *goquery.Selection) {
 		// extrae el nombre del producto
 		name := s.Find(".descrip_full").Text()
