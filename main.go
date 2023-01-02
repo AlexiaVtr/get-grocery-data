@@ -27,10 +27,10 @@ func main() {
 	defer w.Flush()
 
 	// escribe la cabecera del archivo .csv
-	w.Write([]string{"name", "code", "price", "brand", "image_url"})
+	w.Write([]string{"name", "code", "price", "image_url"})
 
 	// selecciona todos los elementos de la clase "product-description"
-	doc.Find(".product_info_container").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".leftList").Each(func(i int, s *goquery.Selection) {
 		// extrae el nombre del producto
 		name := s.Find(".descrip_full").Text()
 
@@ -40,14 +40,11 @@ func main() {
 		// extrae el precio del producto
 		price := s.Find(".atg_store_newPrice").Text()
 
-		// extrae la marca del producto
-		brand, _ := s.Find(".atg_store_productImage").Attr("alt")
-
 		// extrae la url de la imagen del producto
 		imageUrl, _ := s.Find(".atg_store_productImage img").Attr("src")
 
 		// escribe los datos extraídos en el archivo .csv
-		w.Write([]string{name, code, price, brand, imageUrl})
+		w.Write([]string{name, code, price, imageUrl})
 
 	})
 
