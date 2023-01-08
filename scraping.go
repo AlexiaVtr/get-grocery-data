@@ -14,15 +14,14 @@ import (
 
 func getTotalUrlPages(website string, param string) (uint8, error) {
 	var numPages uint64
-	// parseamos la URL
+	// parse the url
 	urlParsed, err := url.Parse(website)
 
-	// obtenemos el valor del parámetro Nrpp
+	// this get the valor of the website the param
 	pages := urlParsed.Query().Get(param)
 	numPages, err = strconv.ParseUint(pages, 10, 32)
 	fmt.Println(pages)
 
-	// control de errores
 	if err != nil {
 		return 0, err
 	}
@@ -48,7 +47,7 @@ func getUrlWithPageChanged(website string, page string) string {
 
 func writeDocumentCurrentPage(writer *csv.Writer, doc *goquery.Document, category string) {
 
-	// selecciona todos los elementos de la clase "leftList"
+	// select all the elements in "leftList" and iterate in those
 	doc.Find(".leftList").Each(func(i int, s *goquery.Selection) {
 
 		name := s.Find(".descrip_full").Text()
@@ -59,7 +58,7 @@ func writeDocumentCurrentPage(writer *csv.Writer, doc *goquery.Document, categor
 
 		imageUrl, _ := s.Find(".atg_store_productImage img").Attr("src")
 
-		// escribe los datos extraídos en el archivo .csv
+		// write the extracted data in the .csv
 		writer.Write([]string{name, code, price, imageUrl, category})
 
 	})
@@ -67,22 +66,21 @@ func writeDocumentCurrentPage(writer *csv.Writer, doc *goquery.Document, categor
 
 func writeDocumentAllPages(writer *csv.Writer, category string) {
 
-	// obtiene el total de iteraciones a realizar en la url
-	//pages, err := getTotalUrlPages(database.WEBSITE, database.PARAM)
-	var pages uint8 = 48
+	// get the total of the iterations to make in the website
+	pages, err := getTotalUrlPages(database.WEBSITE, database.PARAM)
 
 	for page := 0; uint8(page) <= pages; page++ {
 
-		// obtiene la url con la página a iterar.
+		// get the url ti iterate
 		database.WEBSITE = getUrlWithPageChanged(database.WEBSITE, strconv.Itoa(page))
 
-		// parsea y guarda el contenido de la url
+		// parse and save the content of the url
 		pageContent, err := goquery.NewDocument(database.WEBSITE)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// escribe en el documento los productos obtenidos
+		// write in the document the products obtained
 		writeDocumentCurrentPage(writer, pageContent, category)
 
 	}
