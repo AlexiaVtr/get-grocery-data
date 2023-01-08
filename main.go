@@ -12,18 +12,18 @@ func main() {
 
 	defer database.PutDataInDB()
 
-	// abre el archivo .csv para escribir en él
+	// this open the .csv and write in it
 	file, err := os.Create(fmt.Sprintf(`C:/Temp/%s.csv`, database.CATEGORY))
 	defer file.Close()
 
-	// crea un nuevo escritor de CSV
+	// create a new csv writer
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	// escribe la cabecera del archivo .csv
+	// write the header of the .csv document
 	writer.Write([]string{"name", "code", "price", "image_url", "category"})
 
-	//escribe todos los datos obtenidos del website
+	//write all obtained data of the website
 	writeDocumentAllPages(writer, database.CATEGORY)
 
 	if err != nil {
