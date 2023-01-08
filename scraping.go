@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
+	"get-product-data/database"
 	"log"
 	"net/url"
 	"strconv"
@@ -12,13 +14,13 @@ import (
 
 func getTotalUrlPages(website string, param string) (uint8, error) {
 	var numPages uint64
-
 	// parseamos la URL
 	urlParsed, err := url.Parse(website)
 
 	// obtenemos el valor del parámetro Nrpp
 	pages := urlParsed.Query().Get(param)
 	numPages, err = strconv.ParseUint(pages, 10, 32)
+	fmt.Println(pages)
 
 	// control de errores
 	if err != nil {
@@ -63,18 +65,19 @@ func writeDocumentCurrentPage(writer *csv.Writer, doc *goquery.Document, categor
 	})
 }
 
-func writeDocumentAllPages(writer *csv.Writer, category string) error {
+func writeDocumentAllPages(writer *csv.Writer, category string) {
 
 	// obtiene el total de iteraciones a realizar en la url
-	pages, err := getTotalUrlPages(WEBSITE, PARAM)
+	//pages, err := getTotalUrlPages(database.WEBSITE, database.PARAM)
+	var pages uint8 = 48
 
 	for page := 0; uint8(page) <= pages; page++ {
 
 		// obtiene la url con la página a iterar.
-		WEBSITE = getUrlWithPageChanged(WEBSITE, strconv.Itoa(page))
+		database.WEBSITE = getUrlWithPageChanged(database.WEBSITE, strconv.Itoa(page))
 
 		// parsea y guarda el contenido de la url
-		pageContent, err := goquery.NewDocument(WEBSITE)
+		pageContent, err := goquery.NewDocument(database.WEBSITE)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -83,9 +86,4 @@ func writeDocumentAllPages(writer *csv.Writer, category string) error {
 		writeDocumentCurrentPage(writer, pageContent, category)
 
 	}
-
-	if err != nil {
-		log.Println(err)
-	}
-	return err
 }
