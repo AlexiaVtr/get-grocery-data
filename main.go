@@ -15,10 +15,10 @@ const CATEGORY = "Almacen"
 
 func main() {
 
-	database.Connect()
+	defer database.PutDataInDB()
 
 	// abre el archivo .csv para escribir en él
-	file, err := os.Create(fmt.Sprintf("./documents/%v.csv", CATEGORY))
+	file, err := os.Create(fmt.Sprintf(`C:/Temp/%v.csv`, CATEGORY))
 	defer file.Close()
 
 	// crea un nuevo escritor de CSV
