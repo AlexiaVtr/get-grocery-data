@@ -11,16 +11,17 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "2022"
-	dbname   = "GroceryWebsite"
-	CATEGORY = "Perfumeria"
-	PARAM    = "Nrpp"
+	password = "your pass"
+	dbname   = "your db"
+	dbtable = "productos_almacen"
+	CATEGORY = "your category to put in the db"
+	PARAM    = "The param to get the number of the limit iteration in the website to make scraping"
 )
 
 var (
 	PSQLInfo     = fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	documentPath = fmt.Sprintf(`C:/Temp/%v.csv`, CATEGORY)
-	WEBSITE      = "https://www.cotodigital3.com.ar/sitios/cdigi/browse/catalogo-perfumer%C3%ADa/_/N-cblpjz?Nf=product.endDate%7CGTEQ+1.673136E12%7C%7Cproduct.startDate%7CLTEQ+1.673136E12&Nr=AND%28product.sDisp_200%3A1004%2Cproduct.language%3Aespa%C3%B1ol%2COR%28product.siteId%3ACotoDigital%29%29"
+	WEBSITE      = "https://www.thesupermarket.com.ar/thespecificcategory"
 )
 
 func PutDataInDB() {
@@ -35,7 +36,7 @@ func PutDataInDB() {
 		panic(err)
 	}
 
-	_, err = db.Exec(fmt.Sprintf(`COPY productos_almacen FROM '%s' WITH (FORMAT csv, HEADER true)`, documentPath))
+	_, err = db.Exec(fmt.Sprintf(`COPY %s FROM '%s' WITH (FORMAT csv, HEADER true)`, dbtable, documentPath))
 
 	if err != nil {
 		fmt.Println("ERROR:", err)
